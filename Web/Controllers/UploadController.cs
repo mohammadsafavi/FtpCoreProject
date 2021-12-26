@@ -37,7 +37,8 @@ namespace LocalFTPUploadProject.Controllers
         {
             try
             {
-                UploadFileManager.UploadFile(model.FormFile);
+               // FTPManager.UploadFile(model.FormFile);
+                model.FormFile.SaveAsToLocalAndFTP();
 
                 return RedirectToAction(nameof(Index));
             }

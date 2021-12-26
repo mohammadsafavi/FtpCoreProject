@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 
 namespace FTPCore
 {
-    public class UploadFileManager
+    public class FTPManager
     {
-        public static void UploadFile(IFormFile formFile)
+        public static void UploadFile(IFormFile formFile , string filePath = "/upload/")
         {
+            if (formFile == null || formFile.Length == 0)
+            {
+                return;
+            }
             using (var ftp = new FtpClient(UploadConfiguration.FtpAddress, UploadConfiguration.UserName, UploadConfiguration.Password))
             {
                 ftp.Connect();
@@ -31,13 +35,17 @@ namespace FTPCore
 
                 // upload a file with progress tracking
                 //ftp.UploadFile(formFile, "/public_html/temp/README.md", FtpRemoteExists.Overwrite, false, FtpVerify.None, progress);
-                ftp.Upload(formFile.OpenReadStream(), "test/" + formFile.FileName, FtpRemoteExists.Overwrite, true, progress);
+                ftp.Upload(formFile.OpenReadStream(), filePath + "/" + formFile.FileName, FtpRemoteExists.Overwrite, true, progress);
 
             }
         }
 
-        public static async Task UploadFileAsync(IFormFile formFile)
+        public static async Task UploadFileAsync(IFormFile formFile, string filePath = "/upload/")
         {
+            if (formFile == null || formFile.Length == 0)
+            {
+                return;
+            }
             var token = new CancellationToken();
             using (var ftp = new FtpClient(UploadConfiguration.FtpAddress, UploadConfiguration.UserName, UploadConfiguration.Password))
             {
@@ -58,7 +66,7 @@ namespace FTPCore
 
                 // upload a file with progress tracking
                 //   await ftp.UploadFileAsync(@"D:\Github\FluentFTP\README.md", "/public_html/temp/README.md", FtpRemoteExists.Overwrite, false, FtpVerify.None, progress, token);
-                await ftp.UploadAsync(formFile.OpenReadStream(), "/" + formFile.FileName, FtpRemoteExists.Overwrite, false, progress, token);
+                await ftp.UploadAsync(formFile.OpenReadStream(), filePath + "/" + formFile.FileName, FtpRemoteExists.Overwrite, true, progress, token);
 
 
             }
